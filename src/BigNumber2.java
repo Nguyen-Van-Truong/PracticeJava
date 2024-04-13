@@ -14,19 +14,32 @@ public class BigNumber2 {
 
     // Method to add two LargeNumber objects
     public BigNumber2 add(BigNumber2 other) {
+        int maxLen = Math.max(this.digits[0], other.digits[0]);
         BigNumber2 result = new BigNumber2("0");
+        result.digits[0] = maxLen; // Assume result length to be the max of both
         int carry = 0;
-        int newLength = Math.max(this.digits[0], other.digits[0]) + 3;
-        result.digits[0] = newLength;
-//        System.out.println(digits[0] + " " + other.digits[0]);
-        for (int i = digits[0]; i >= 1; i--) {
-            int sum = this.digits[i] + other.digits[i] + carry;
+
+        for (int i = maxLen; i > 0; i--) {
+            int d1 = i <= this.digits[0] ? this.digits[i] : 0;
+            int d2 = i <= other.digits[0] ? other.digits[i] : 0;
+            int sum = d1 + d2 + carry;
             result.digits[i] = sum % 10;
-            System.out.println(result);
             carry = sum / 10;
+        }
+
+        if (carry > 0) {
+            // Handle carry at the most significant digit
+            if (result.digits[0] < 999) {
+                result.digits[0]++;
+                for (int i = result.digits[0]; i > 1; i--) {
+                    result.digits[i] = result.digits[i - 1];
+                }
+                result.digits[1] = carry;
+            }
         }
         return result;
     }
+
 
     // Static method to add multiple LargeNumber objects
     public static BigNumber2 addMultiple(BigNumber2[] numbers) {
@@ -39,18 +52,27 @@ public class BigNumber2 {
 
     public BigNumber2 multiply(BigNumber2 other) {
         BigNumber2 result = new BigNumber2("0");
-        for (int i = 999; i >= 0; i--) {
-            int carry = 0;
+        for (int i = 1; i <= this.digits[0]; i++) {
             BigNumber2 temp = new BigNumber2("0");
-            for (int j = 999, k = i; j >= 0 && k >= 0; j--, k--) {
-                int product = this.digits[j] * other.digits[k] + carry;
-                temp.digits[k] = product % 10;
+            temp.digits[0] = i + other.digits[0] - 1; // Initial length of partial product
+            int carry = 0;
+
+            for (int j = 1; j <= other.digits[0]; j++) {
+                int product = this.digits[i] * other.digits[j] + carry;
+                temp.digits[i + j - 1] = product % 10;
                 carry = product / 10;
             }
+
+            if (carry > 0) {
+                temp.digits[temp.digits[0] + 1] = carry;
+                temp.digits[0]++;
+            }
+
             result = result.add(temp);
         }
         return result;
     }
+
 
     @Override
     public String toString() {
