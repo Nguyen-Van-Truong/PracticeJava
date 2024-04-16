@@ -1,78 +1,75 @@
+import java.math.BigInteger;
+
 public class BigNumber {
-    private int[] digits; // Array to store each digit, assuming a maximum length of 1000
+    int[] digit;
+    int len;
+    private static final int MAX_DIGITS = 1000;
 
     public BigNumber(String number) {
-        digits = new int[1000]; // Assuming maximum length of 1000
-        int length = number.length();
-        for (int i = 0; i < length; i++) {
-            digits[999 - i] = number.charAt(length - 1 - i) - '0';
-//            System.out.println(digits[999 - i]);
+        this.digit = new int[MAX_DIGITS];
+        this.len = number.length();
+        for (int i = 0, j = len - 1; i < len; i++, j--) {
+            digit[i] = Character.getNumericValue(number.charAt(j));
         }
     }
 
-    // Method to add two LargeNumber objects
-    public BigNumber add(BigNumber other) {
+    public void addBigNumber(BigNumber that) {
         BigNumber result = new BigNumber("0");
-        int carry = 0;
-        for (int i = 999; i >= 0; i--) {
-            int sum = this.digits[i] + other.digits[i] + carry;
-            result.digits[i] = sum % 10;
-            carry = sum / 10;
-        }
-        return result;
-    }
+        int max = this.len > that.len ? this.len : that.len;
+        this.len = max;
+        int mem = 0, total;
 
-    // Static method to add multiple LargeNumber objects
-    public static BigNumber addMultiple(BigNumber[] numbers) {
-        BigNumber sum = new BigNumber("0");
-        for (BigNumber number : numbers) {
-            sum = sum.add(number);
+        for (int i = 0; i < max; i++) {
+            total = mem + this.digit[i] + that.digit[i];
+            mem = total / 10;
+            this.digit[i] = total % 10;
         }
-        return sum;
-    }
 
-    public BigNumber multiply(BigNumber other) {
-        BigNumber result = new BigNumber("0");
-        for (int i = 999; i >= 0; i--) {
-            int carry = 0;
-            BigNumber temp = new BigNumber("0");
-            for (int j = 999, k = i; j >= 0 && k >= 0; j--, k--) {
-                int product = this.digits[j] * other.digits[k] + carry;
-                temp.digits[k] = product % 10;
-                carry = product / 10;
-            }
-            result = result.add(temp);
+        if (mem > 0) {
+            this.digit[max] = mem;
+            this.len++;
         }
-        return result;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        boolean foundFirstNonZero = false;
-        for (int digit : digits) {
-            if (digit == 0 && !foundFirstNonZero) {
-                continue;
-            }
-            foundFirstNonZero = true;
-            sb.append(digit);
+        for (int i = len - 1; i >= 0; i--) {
+            sb.append(digit[i]);
         }
-        return foundFirstNonZero ? sb.toString() : "0";
+        return sb.toString();
     }
 
     public static void main(String[] args) {
-        BigNumber[] numbers = {
-            new BigNumber("123456"),
-            new BigNumber("12"),
-            new BigNumber("123456789012345678901234567890")
-        };
-        BigNumber sum = BigNumber.addMultiple(numbers);
+        String n1 = "789798798798798798978";
+        String n2 = "98797899879878989899999999999";
 
-        BigNumber n1 = new BigNumber("123");
-        BigNumber n2 = new BigNumber("134");
+        // Create two BigNumber instances with large numbers
+        BigNumber number1 = new BigNumber(n1);
+        BigNumber number2 = new BigNumber(n2);
 
+        // Display the numbers before addition
+        System.out.println("BigNumber 1: " + number1);
+        System.out.println("BigNumber 2: " + number2);
 
-        System.out.println(n1.multiply(n2).toString());
-//        System.out.println(sum.toString());
+        // Add the numbers together using BigNumber
+        number1.addBigNumber(number2);
+
+        // Display the result after addition
+        System.out.println("BigNumber Sum: " + number1);
+
+        // Now using BigInteger for comparison
+
+        BigInteger bigInt1 = new BigInteger(n1);
+        BigInteger bigInt2 = new BigInteger(n2);
+
+        // Add the numbers together using BigInteger
+        BigInteger bigIntSum = bigInt1.add(bigInt2);
+
+        // Display the result after addition
+        System.out.println("BigInteger Sum: " + bigIntSum);
+
+        // Compare results
+        System.out.println("Results are the same: " + number1.toString().equals(bigIntSum.toString()));
     }
 }

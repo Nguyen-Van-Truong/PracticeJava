@@ -1,9 +1,9 @@
 import java.math.BigInteger;
 
-public class BigNumber2 {
+public class BigNumberHome2 {
     private int[] digits; // Array to store each digit, assuming a maximum length of 1000
 
-    public BigNumber2(String number) {
+    public BigNumberHome2(String number) {
         digits = new int[1000]; // Assuming maximum length of 1000
         int length = number.length();
         digits[0] = number.length();
@@ -13,9 +13,9 @@ public class BigNumber2 {
     }
 
     // Method to add two LargeNumber objects
-    public BigNumber2 add(BigNumber2 other) {
+    public BigNumberHome2 add(BigNumberHome2 other) {
         int maxLen = Math.max(this.digits[0], other.digits[0]);
-        BigNumber2 result = new BigNumber2("0");
+        BigNumberHome2 result = new BigNumberHome2("0");
         result.digits[0] = maxLen; // Assume result length to be the max of both
         int carry = 0;
 
@@ -42,18 +42,18 @@ public class BigNumber2 {
 
 
     // Static method to add multiple LargeNumber objects
-    public static BigNumber2 addMultiple(BigNumber2[] numbers) {
-        BigNumber2 sum = new BigNumber2("0");
-        for (BigNumber2 number : numbers) {
+    public static BigNumberHome2 addMultiple(BigNumberHome2[] numbers) {
+        BigNumberHome2 sum = new BigNumberHome2("0");
+        for (BigNumberHome2 number : numbers) {
             sum = sum.add(number);
         }
         return sum;
     }
 
-    public BigNumber2 multiply(BigNumber2 other) {
-        BigNumber2 result = new BigNumber2("0");
+    public BigNumberHome2 multiply(BigNumberHome2 other) {
+        BigNumberHome2 result = new BigNumberHome2("0");
         for (int i = 1; i <= this.digits[0]; i++) {
-            BigNumber2 temp = new BigNumber2("0");
+            BigNumberHome2 temp = new BigNumberHome2("0");
             temp.digits[0] = i + other.digits[0] - 1; // Initial length of partial product
             int carry = 0;
 
@@ -92,8 +92,8 @@ public class BigNumber2 {
 //        };
 //        BigNumber2 sum = BigNumber2.addMultiple(numbers);
 
-        BigNumber2 n1 = new BigNumber2("123");
-        BigNumber2 n2 = new BigNumber2("999");
+        BigNumberHome2 n1 = new BigNumberHome2("123");
+        BigNumberHome2 n2 = new BigNumberHome2("999");
 
 //        System.out.println(n1);
 //        System.out.println(n1.multiply(n2).toString());
